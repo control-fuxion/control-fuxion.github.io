@@ -1,0 +1,50 @@
+name: Copia automática FuXion
+
+on:
+  schedule:
+    - cron: "20 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fuxion-automatic-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Abrir repositorio
+        uses: actions/checkout@v4
+
+      - name: Descargar copia cifrada
+        env:
+          BACKUP_URL: https://mi-control-fuxion-clientes.nr7129131.chatgpt.site/api/backups/bundle
+        run: |
+          set -euo pipefail
+          backup_date="$(TZ=America/Lima date +%F)"
+          destination="recovery/data/${backup_date}"
+          mkdir -p "$destination"
+          curl --fail --silent --show-error --retry 3 --retry-delay 5 \
+            --connect-timeout 20 --max-time 120 \
+            "$BACKUP_URL" \
+            --output "$destination/fuxion-completo.fxbackup"
+          node -e 'const fs=require("fs");const p=process.argv[1];const x=JSON.parse(fs.readFileSync(p,"utf8"));if(x.format!=="fuxion-recovery-package-v1"||!x.backups?.principal||!x.backups?.clientes)process.exit(1)' \
+            "$destination/fuxion-completo.fxbackup"
+          cp "$destination/fuxion-completo.fxbackup" recovery/latest.fxbackup
+          find recovery/data -mindepth 1 -maxdepth 1 -type d -mtime +35 -exec rm -rf {} +
+
+      - name: Guardar historial
+        run: |
+          set -euo pipefail
+          git config user.name "FuXion Backup"
+          git config user.email "actions@users.noreply.github.com"
+          git add recovery/data recovery/latest.fxbackup
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Respaldo automático FuXion $(TZ=America/Lima date +%F)"
+          git push
