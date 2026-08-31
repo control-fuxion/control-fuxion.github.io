@@ -10,4 +10,4 @@ Este directorio conserva copias **cifradas** de FuXion Studio y Mi Control FuXio
 
 Para abrir una copia, visita `https://control-fuxion.github.io/recovery/`. El descifrado ocurre únicamente dentro del navegador y no envía la clave ni los datos a un servidor.
 
-El archivo de código fuente ubicado en `source/` permite reconstruir las páginas si fuera necesario. No contiene contraseñas ni claves privadas.
+El código de las páginas permanece protegido por el historial de versiones de las dos publicaciones activas.
