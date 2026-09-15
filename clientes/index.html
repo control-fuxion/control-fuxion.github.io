@@ -32,7 +32,7 @@
   </head>
   <body>
     <div class="loader" id="loader" role="status" aria-live="polite"><div class="loader-card"><span class="brand">F</span><h1>Mi Control FuXion</h1><p>Preparando tu cuenta privada…</p><div class="bar"></div></div></div>
-    <iframe id="app" title="Mi Control FuXion" src="https://mi-control-fuxion-clientes.nr7129131.chatgpt.site/?v=20260914-loader-preserved" allow="clipboard-read; clipboard-write" referrerpolicy="no-referrer"></iframe>
-    <script>const app=document.getElementById('app'),loader=document.getElementById('loader');const reveal=()=>loader.classList.add('hidden');app.addEventListener('load',reveal);window.setTimeout(reveal,10000);</script>
+    <iframe id="app" title="Mi Control FuXion" src="https://mi-control-fuxion-clientes.nr7129131.chatgpt.site/?v=20260914-direct-fallback" allow="clipboard-read; clipboard-write" referrerpolicy="no-referrer"></iframe>
+    <script>const app=document.getElementById('app'),loader=document.getElementById('loader');let ready=false;const reveal=()=>{ready=true;loader.classList.add('hidden')};app.addEventListener('load',reveal);window.setTimeout(()=>{if(!ready)window.location.replace(app.src)},10000);</script>
   </body>
 </html>
